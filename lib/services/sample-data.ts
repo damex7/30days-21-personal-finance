@@ -1,7 +1,7 @@
 // SAMPLE DATA: a believable Lagos money life, for the demo (3 months) and
 // the seed (12 months). Shared, so both look the same.
 //
-// Someone paid ₦385,000 on the 25th into GTBank, who pays rent on the 1st,
+// Someone paid ₦450,000 on the 25th into GTBank, who pays rent on the 1st,
 // buys MTN data on OPay, pays DSTV, puts ₦5,000 into an ajo every Friday,
 // moves ₦50,000 to Kuda savings after payday, rides Bolt and danfo, shops at
 // the market and Shoprite (some trips split between food and household
@@ -57,9 +57,9 @@ export async function createSampleData(tx: Db, userId: string, options: { months
   }
 
   // Accounts, opened on the first day of the data.
-  const gtb = await insertAccount(tx, userId, { name: 'GTBank salary', type: 'bank', institution: 'GTBank', openingBalanceKobo: naira(185_000), openingDate: start })
-  const opay = await insertAccount(tx, userId, { name: 'OPay', type: 'wallet', institution: 'OPay', openingBalanceKobo: naira(12_500), openingDate: start })
-  const cash = await insertAccount(tx, userId, { name: 'Cash', type: 'cash', institution: null, openingBalanceKobo: naira(8_000), openingDate: start })
+  const gtb = await insertAccount(tx, userId, { name: 'GTBank salary', type: 'bank', institution: 'GTBank', openingBalanceKobo: naira(350_000), openingDate: start })
+  const opay = await insertAccount(tx, userId, { name: 'OPay', type: 'wallet', institution: 'OPay', openingBalanceKobo: naira(35_000), openingDate: start })
+  const cash = await insertAccount(tx, userId, { name: 'Cash', type: 'cash', institution: null, openingBalanceKobo: naira(25_000), openingDate: start })
   const kuda = await insertAccount(tx, userId, { name: 'Kuda savings', type: 'savings', institution: 'Kuda', openingBalanceKobo: naira(150_000), openingDate: start })
 
   const txs: NewTransaction[] = []
@@ -85,8 +85,8 @@ export async function createSampleData(tx: Db, userId: string, options: { months
   let friday = start
   while (new Date(`${friday}T12:00:00Z`).getUTCDay() !== 5) friday = addDays(friday, 1)
   const specs: RuleSpec[] = [
-    { name: 'Salary', type: 'income', account: gtb, category: 'Salary', amount: naira(385_000), payee: 'Adebayo & Sons Ltd (salary)', schedule: { frequency: 'monthly', dayOfMonth: 25, startOn: start } },
-    { name: 'Rent', type: 'expense', account: gtb, category: 'Rent', amount: naira(120_000), payee: 'Mr Okonkwo (landlord)', schedule: { frequency: 'monthly', dayOfMonth: 1, startOn: start } },
+    { name: 'Salary', type: 'income', account: gtb, category: 'Salary', amount: naira(450_000), payee: 'Adebayo & Sons Ltd (salary)', schedule: { frequency: 'monthly', dayOfMonth: 25, startOn: start } },
+    { name: 'Rent', type: 'expense', account: gtb, category: 'Rent', amount: naira(100_000), payee: 'Mr Okonkwo (landlord)', schedule: { frequency: 'monthly', dayOfMonth: 1, startOn: start } },
     { name: 'MTN data', type: 'expense', account: opay, category: 'Data & airtime', amount: naira(4_500), payee: 'MTN 20GB monthly', schedule: { frequency: 'monthly', dayOfMonth: 5, startOn: start } },
     { name: 'DSTV Compact', type: 'expense', account: gtb, category: 'TV & subscriptions', amount: naira(15_700), payee: 'MultiChoice DSTV', schedule: { frequency: 'monthly', dayOfMonth: 10, startOn: start } },
     { name: 'Ajo (Iya Bisi’s group)', type: 'expense', account: cash, category: 'Ajo/esusu', amount: naira(5_000), payee: 'Iya Bisi (ajo)', schedule: { frequency: 'weekly', dayOfMonth: null, startOn: friday } },
@@ -123,13 +123,13 @@ export async function createSampleData(tx: Db, userId: string, options: { months
       // Commuting on weekdays: danfo/keke in cash most days, Bolt sometimes.
       if (weekday >= 1 && weekday <= 5) {
         if (rand() < 0.8) entry({ accountId: cash, type: 'expense', direction: 'out', amountKobo: naira(between(400, 1_200)), categoryId: c('Danfo & keke'), occurredOn: date, payee: pick(['Danfo, Ojota–CMS', 'Keke, Yaba', 'BRT, Ikorodu']) })
-        if (rand() < 0.3) entry({ accountId: opay, type: 'expense', direction: 'out', amountKobo: naira(between(2_200, 6_800)), categoryId: c('Bolt & ride-hailing'), occurredOn: date, payee: 'Bolt' })
-        if (rand() < 0.25) entry({ accountId: opay, type: 'expense', direction: 'out', amountKobo: naira(between(2_500, 7_500)), categoryId: c('Eating out'), occurredOn: date, payee: pick(eateries) })
+        if (rand() < 0.2) entry({ accountId: opay, type: 'expense', direction: 'out', amountKobo: naira(between(2_200, 6_800)), categoryId: c('Bolt & ride-hailing'), occurredOn: date, payee: 'Bolt' })
+        if (rand() < 0.15) entry({ accountId: opay, type: 'expense', direction: 'out', amountKobo: naira(between(2_500, 7_500)), categoryId: c('Eating out'), occurredOn: date, payee: pick(eateries) })
       }
       // Saturday market: a split between food and household things, half the time.
       if (weekday === 6) {
-        const food = naira(between(9_000, 24_000))
-        const household = rand() < 0.5 ? naira(between(2_500, 8_000)) : 0
+        const food = naira(between(7_000, 16_000))
+        const household = rand() < 0.5 ? naira(between(2_000, 6_000)) : 0
         const row = entry({ accountId: cash, type: 'expense', direction: 'out', amountKobo: food + household, categoryId: household ? null : c('Market'), occurredOn: date, payee: pick(markets) })
         if (household) {
           splits.push({ transactionId: row.id, kind: 'expense', categoryId: c('Market'), amountKobo: food, note: 'Foodstuff' })
@@ -140,18 +140,18 @@ export async function createSampleData(tx: Db, userId: string, options: { months
       if (weekday === 0) entry({ accountId: cash, type: 'expense', direction: 'out', amountKobo: naira(pick([1_000, 2_000, 2_000, 5_000])), categoryId: c('Church/mosque giving'), occurredOn: date, payee: 'Sunday offering' })
       // Fortnightly Shoprite run on the card, also sometimes split.
       if (day === 8 || day === 22) {
-        const food = naira(between(14_000, 32_000))
-        const household = naira(between(3_000, 9_000))
+        const food = naira(between(9_000, 20_000))
+        const household = naira(between(2_000, 6_000))
         const row = entry({ accountId: gtb, type: 'expense', direction: 'out', amountKobo: food + household, categoryId: null, occurredOn: date, payee: 'POS SHOPRITE LEKKI' })
         splits.push({ transactionId: row.id, kind: 'expense', categoryId: c('Food & groceries'), amountKobo: food, note: null })
         splits.push({ transactionId: row.id, kind: 'expense', categoryId: c('Household'), amountKobo: household, note: null })
       }
       // Prepaid meter top-ups and generator fuel.
       if (day === 3 || day === 17) entry({ accountId: opay, type: 'expense', direction: 'out', amountKobo: naira(pick([10_000, 15_000, 15_000, 20_000])), categoryId: c('Electricity (prepaid)'), occurredOn: date, payee: 'IKEDC prepaid token' })
-      if (day === 12 || (day === 27 && rand() < 0.6)) entry({ accountId: cash, type: 'expense', direction: 'out', amountKobo: naira(between(9_000, 22_000)), categoryId: c('Fuel & generator'), occurredOn: date, payee: pick(['Total Energies, Ikeja', 'Conoil, Ojota', 'Mobil, Yaba']) })
+      if (day === 12 || (day === 27 && rand() < 0.6)) entry({ accountId: gtb, type: 'expense', direction: 'out', amountKobo: naira(between(9_000, 22_000)), categoryId: c('Fuel & generator'), occurredOn: date, payee: pick(['Total Energies, Ikeja', 'Conoil, Ojota', 'Mobil, Yaba']) })
       // Topping up OPay and drawing cash from GTBank, with a small fee.
-      if (day === 2 || day === 16) transfer(gtb, opay, naira(pick([20_000, 25_000, 30_000])), date, naira(10), ['GTBank salary', 'OPay'])
-      if (day === 6 || day === 20) transfer(gtb, cash, naira(pick([20_000, 30_000, 40_000])), date, 0, ['GTBank salary', 'Cash'])
+      if (day === 2 || day === 16) transfer(gtb, opay, naira(pick([15_000, 20_000, 25_000])), date, naira(10), ['GTBank salary', 'OPay'])
+      if (day === 6 || day === 13 || day === 20 || day === 27) transfer(gtb, cash, naira(pick([25_000, 30_000])), date, 0, ['GTBank salary', 'Cash'])
       // Family and a side hustle.
       if (day === 28) entry({ accountId: gtb, type: 'expense', direction: 'out', amountKobo: naira(30_000), categoryId: c('Family support'), occurredOn: date, payee: 'Mummy (monthly upkeep)' })
       if (day === 14 && rand() < 0.7) entry({ accountId: opay, type: 'income', direction: 'in', amountKobo: naira(between(25_000, 60_000)), categoryId: c('Side hustle'), occurredOn: date, payee: 'Graphic design job' })
@@ -191,7 +191,7 @@ export async function createSampleData(tx: Db, userId: string, options: { months
       { categoryId: c('Fuel & generator'), monthStart: firstDayOf(month), limitKobo: limit(30_000, Math.floor((fuel * 0.85) / naira(1_000)) * naira(1_000)), rollover: false },
       { categoryId: c('Electricity (prepaid)'), monthStart: firstDayOf(month), limitKobo: naira(35_000), rollover: false },
       { categoryId: c('Data & airtime'), monthStart: firstDayOf(month), limitKobo: naira(8_000), rollover: false },
-      { categoryId: c('Household'), monthStart: firstDayOf(month), limitKobo: naira(25_000), rollover: true },
+      { categoryId: c('Household'), monthStart: firstDayOf(month), limitKobo: naira(12_000), rollover: true },
     )
   }
   await insertBudgets(tx, userId, budgets)

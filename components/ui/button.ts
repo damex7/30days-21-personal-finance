@@ -4,7 +4,7 @@
 // each page, easy to hit with one thumb on a phone.
 
 const base =
-  'inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-4 text-[0.95rem] font-semibold no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-60'
+  'inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-control px-4 text-[0.95rem] font-semibold no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-60'
 
 export const button = {
   primary: `${base} bg-primary text-on-primary hover:bg-primary-hover`,

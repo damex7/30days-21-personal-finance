@@ -12,7 +12,7 @@ import { button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { Notice } from '@/components/ui/notice'
 import { cn } from '@/lib/cn'
-import { formatNaira } from '@/lib/money'
+import { formatBalance } from '@/lib/money'
 import type { FormState } from '@/lib/validation'
 import { SplitEditor } from './split-editor'
 import type { AccountOption, CategoryOption } from './types'
@@ -163,7 +163,7 @@ export function EntryForm({
             <option value="">Choose…</option>
             {accounts.map((a) => (
               <option key={a.id} value={a.id}>
-                {a.name} ({formatNaira(a.balanceKobo)})
+                {a.name} ({formatBalance(a.balanceKobo)})
               </option>
             ))}
           </SelectField>
@@ -189,7 +189,7 @@ export function EntryForm({
             <option value="">Choose…</option>
             {accounts.map((a) => (
               <option key={a.id} value={a.id}>
-                {a.name} ({formatNaira(a.balanceKobo)})
+                {a.name} ({formatBalance(a.balanceKobo)})
               </option>
             ))}
           </SelectField>

@@ -17,14 +17,16 @@ function isActive(pathname: string, href: string) {
 /** The tabs across the top on a wide screen. aria-current="page" marks where you are, in words for screen readers and with an underline for the eye. */
 export function TopNav({ admin }: { admin: boolean }) {
   const pathname = usePathname()
-  const items = [...MAIN_NAV, ...MORE_NAV, ...(admin ? [{ href: '/admin', label: 'Admin', icon: 'shield' as const }] : [])]
+  // The five main places always; the rest only on very wide screens, with "More" for them below that.
+  const extra = [...MORE_NAV, ...(admin ? [{ href: '/admin', label: 'Admin', icon: 'shield' as const }] : [])]
+  const items = [...MAIN_NAV.map((i) => ({ ...i, wide: false, narrowOnly: false })), ...extra.map((i) => ({ ...i, wide: true, narrowOnly: false })), { href: '/more', label: 'More', icon: 'menu' as const, wide: false, narrowOnly: true }]
   return (
     <nav aria-label="Main" className="max-lg:hidden">
       <ul className="flex flex-wrap items-center gap-0.5">
         {items.map((item) => {
           const active = isActive(pathname, item.href)
           return (
-            <li key={item.href}>
+            <li key={item.href} className={cn(item.wide && 'max-2xl:hidden', item.narrowOnly && '2xl:hidden')}>
               <Link
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
