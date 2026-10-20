@@ -6,8 +6,8 @@ import { sql } from '@/lib/db'
 
 export type Visibility = 'visible' | 'hidden' | 'signed-out'
 
-const TABLES = { accounts: 'accounts', transactions: 'transactions', import: 'imports' } as const
-export type OwnedKind = keyof typeof TABLES
+/** The URL segment: /accounts/<id>, /transactions/<id>, /import/<id>. */
+export type OwnedKind = 'accounts' | 'transactions' | 'import'
 
 /**
  * 'hidden' when the session is valid but the row doesn't exist OR belongs
