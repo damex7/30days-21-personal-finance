@@ -61,6 +61,11 @@ export async function startImport(actor: UserActor, input: { accountId: string; 
   return repo.insertImport(http, actor.user.id, { accountId: input.accountId, fileName: input.fileName.slice(0, 200), rawCsv: input.text, headers: parsed.headers, rowCount: parsed.rows.length })
 }
 
+/** One import of yours, or 404 (also when it's someone else's). */
+export async function getImport(actor: UserActor, id: string): Promise<ImportRow> {
+  return loadImport(http, actor, id)
+}
+
 export function listImports(actor: UserActor): Promise<ImportRow[]> {
   return repo.listImports(http, actor.user.id, 20)
 }
