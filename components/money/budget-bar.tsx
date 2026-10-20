@@ -19,7 +19,7 @@ export function BudgetBar({ spentKobo, availableKobo, percent, state, compact = 
   const width = Math.min(100, Math.max(state === 'on_track' && spentKobo === 0 ? 0 : 2, percent))
   return (
     <div>
-      <div aria-hidden className={cn('overflow-hidden rounded-pill bg-track', compact ? 'h-2' : 'h-3')}>
+      <div aria-hidden className={cn('overflow-hidden rounded-pill border border-rule bg-track', compact ? 'h-2' : 'h-3')}>
         <div className={cn('h-full rounded-pill', s.fill)} style={{ width: `${width}%` }} />
       </div>
       <p className={cn('mt-1.5 flex flex-wrap items-baseline justify-between gap-x-3 text-sm', compact && 'text-xs')}>

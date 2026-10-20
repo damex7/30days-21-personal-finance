@@ -47,7 +47,7 @@ async function Goals() {
               </div>
               <p className="engraved mt-2 text-3xl">{formatNaira(g.savedKobo)}</p>
               <p className="figures text-sm text-muted">of {formatNaira(g.targetKobo)} · {g.percent}%{g.accountName ? ` · kept in ${g.accountName}` : ''}</p>
-              <div aria-hidden className="mt-2 h-3 overflow-hidden rounded-pill bg-track">
+              <div aria-hidden className="mt-2 h-3 overflow-hidden rounded-pill border border-rule bg-track">
                 <div className="h-full rounded-pill bg-bar" style={{ width: `${g.percent}%` }} />
               </div>
               <p className="mt-2 text-sm">

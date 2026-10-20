@@ -192,7 +192,7 @@ async function Dashboard({ searchParams }: Pick<PageProps<'/dashboard'>, 'search
                       <span className="truncate">{g.name}</span>
                       <span className="figures text-muted">{g.percent}%</span>
                     </p>
-                    <div aria-hidden className="mt-1 h-2.5 overflow-hidden rounded-pill bg-track">
+                    <div aria-hidden className="mt-1 h-2.5 overflow-hidden rounded-pill border border-rule bg-track">
                       <div className="h-full rounded-pill bg-bar" style={{ width: `${g.percent}%` }} />
                     </div>
                     <p className="figures mt-1 text-sm text-muted">

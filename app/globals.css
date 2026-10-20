@@ -61,8 +61,11 @@
   --color-rule: light-dark(#8FB3E2, rgb(143 179 226 / 0.32));
   --color-edge: light-dark(#31487A, #8FB3E2);
 
-  /* Charts and progress bars: the empty part, and the bar. */
-  --color-track: light-dark(#8FB3E2, #192338);
+  /* Charts and progress bars: the empty part, and the bar. In light mode
+     the track is a Lavender well outlined in Jordy (the border is the
+     decoration): every fill, ochre included, then stands out from its
+     track by 3:1 or more, which a Jordy track can't give the ochre. */
+  --color-track: light-dark(#D9E1F1, #192338);
   --color-bar: light-dark(#31487A, #8FB3E2);
 
   /* STATUS: money and budgets ONLY. Muted to sit with the blues, each AA
