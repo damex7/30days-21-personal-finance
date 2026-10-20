@@ -6,7 +6,7 @@ import { csvCell, toCsv } from '@/lib/csv'
 import { http } from '@/lib/db/executor'
 import { koboToInput } from '@/lib/money'
 import * as repo from '@/lib/repos/reports'
-import { addMonths, currentMonth, daysBetween, firstDayOf, todayInLagos, type IsoMonth } from '@/lib/time'
+import { addMonths, currentMonth, daysBetween, firstDayOf, lastDayOf, todayInLagos, type IsoMonth } from '@/lib/time'
 import type { UserActor } from './actor'
 import { getAccount } from './accounts'
 import { invalid } from './errors'
@@ -17,13 +17,6 @@ export type ReportQuery = { from: IsoMonth; to: IsoMonth; month: IsoMonth; accou
 export function defaultReportQuery(): ReportQuery {
   const to = currentMonth()
   return { from: addMonths(to, -11), to, month: to }
-}
-
-function lastDayOf(month: IsoMonth): string {
-  const start = firstDayOf(addMonths(month, 1))
-  const [y, m, d] = start.split('-').map(Number) as [number, number, number]
-  const last = new Date(Date.UTC(y, m - 1, d - 1))
-  return last.toISOString().slice(0, 10)
 }
 
 export type Reports = {
