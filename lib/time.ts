@@ -175,3 +175,9 @@ export function fromNow(instant: Date, now: Date = new Date()): string {
 export function relativeDay(date: IsoDate, today: IsoDate): string {
   return RELATIVE.format(daysBetween(today, date), 'day')
 }
+
+/** '2026-10' → '2026-10-31'; '2028-02' → '2028-02-29'. */
+export function lastDayOf(month: IsoMonth): IsoDate {
+  const [y, m] = parts(firstDayOf(month))
+  return toIsoDate(y, m, daysInMonth(y, m))
+}

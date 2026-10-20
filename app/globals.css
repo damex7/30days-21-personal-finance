@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+/*
+ * ÀPÒ DESIGN TOKENS: "a well-kept ledger book in ink blue".
+ *
+ * The ONLY colours in the app are the five palette blues, one tint derived
+ * from them, and three muted status colours for money and budgets. Each is
+ * defined ONCE here; components only ever use the semantic names below
+ * (bg-card, text-ink, border-rule ...), never a hex value.
+ * `--color-*: initial` removes Tailwind's default palette, so an off-palette
+ * `text-gray-500` or `bg-green-600` doesn't even exist.
+ *
+ * PALETTE
+ *   Oxford Blue  #192338   Space Cadet #1E2E4F   YInMn Blue #31487A
+ *   Jordy Blue   #8FB3E2   Lavender    #D9E1F1   card tint  #EEF2F9 (a lighter Lavender)
+ *
+ * Each semantic colour is light-dark(light, dark): `color-scheme` (set from
+ * data-theme by the toggle, or the OS when there's no choice) picks the
+ * side. Contrast ratios for every text pairing are in the README and are
+ * re-checked by npm run check:contrast.
+ *
+ * JORDY BLUE IS DECORATION ONLY in light mode (ruled lines, progress
+ * tracks, selected rows, the empty part of charts). On Lavender it is
+ * 1.65:1, far below the 4.5:1 text needs, so it is never text there.
+ */
+@theme {
+  --color-*: initial;
+
+  /* The palette itself (used by the donut, the category chips and the mark). */
+  --color-oxford: #192338;
+  --color-space-cadet: #1E2E4F;
+  --color-yinmn: #31487A;
+  --color-jordy: #8FB3E2;
+  --color-lavender: #D9E1F1;
+  --color-tint: #EEF2F9;
+
+  /* SURFACES. Light: Lavender page, tint cards. Dark: Oxford page, Space
+     Cadet cards (and the bottom nav), YInMn inputs and raised surfaces. */
+  --color-page: light-dark(#D9E1F1, #192338);
+  --color-card: light-dark(#EEF2F9, #1E2E4F);
+  --color-raised: light-dark(#EEF2F9, #31487A);
+  /* An input: a Lavender "well" in a light card; YInMn in dark mode. */
+  --color-well: light-dark(#D9E1F1, #31487A);
+  /* A selected row / the chosen option. */
+  --color-selected: light-dark(#8FB3E2, #31487A);
+
+  /* TEXT. Light: Oxford main, Space Cadet secondary. Dark: Lavender, and
+     Lavender at 78% (7.80:1 on Oxford, 6.88:1 on Space Cadet, 4.88:1 on YInMn). */
+  --color-ink: light-dark(#192338, #D9E1F1);
+  --color-muted: light-dark(#1E2E4F, rgb(217 225 241 / 0.78));
+
+  /* PRIMARY: buttons, links, the active tab, chart bars, the focus ring.
+     YInMn in light mode (6.84:1 on Lavender), Jordy in dark (7.26:1 on Oxford). */
+  --color-primary: light-dark(#31487A, #8FB3E2);
+  --color-primary-hover: light-dark(#1E2E4F, #D9E1F1);
+  --color-on-primary: light-dark(#D9E1F1, #192338);
+
+  /* LINES. Ruled lines are decoration (Jordy; a softer Jordy on dark
+     surfaces). Borders that must be SEEN (inputs, buttons) need 3:1, which
+     Jordy can't give on Lavender, so they use YInMn / Jordy. */
+  --color-rule: light-dark(#8FB3E2, rgb(143 179 226 / 0.32));
+  --color-edge: light-dark(#31487A, #8FB3E2);
+
+  /* Charts and progress bars: the empty part, and the bar. */
+  --color-track: light-dark(#8FB3E2, #192338);
+  --color-bar: light-dark(#31487A, #8FB3E2);
+
+  /* STATUS: money and budgets ONLY. Muted to sit with the blues, each AA
+     on its backgrounds (light: on Lavender / card; dark: on Oxford / Space
+     Cadet / YInMn), and always next to a sign or a word, never alone. */
+  --color-money-in: light-dark(#1D6B47, #86D3A8);   /* 4.93 / 5.76  ·  8.89 / 7.63 / 5.09 */
+  --color-money-out: light-dark(#A1353A, #F2A7A7);  /* 5.18 / 6.06  ·  8.11 / 6.97 / 4.64 */
+  --color-warn: light-dark(#835A0B, #E9C46A);       /* 4.66 / 5.45  ·  9.39 / 8.06 / 5.37 */
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* TYPE (variables from next/font in app/layout.tsx). */
+  --font-display: var(--font-libre-bodoni), "Bodoni 72", "Didot", Georgia, serif;
+  --font-sans: var(--font-fira-sans), system-ui, sans-serif;
+
+  --radius-control: 0.3rem;
+  --radius-card: 0.5rem;
+  --radius-pill: 999px;
+
+  /* Paper on a desk: a hairline and a soft Oxford shadow, nothing floating. */
+  --shadow-card: 0 1px 0 rgb(25 35 56 / 0.08), 0 8px 20px -16px rgb(25 35 56 / 0.55);
+  --shadow-pop: 0 24px 48px -20px rgb(25 35 56 / 0.7);
+
+  --container-form: 34rem;
+  --container-page: 72rem;
+
+  --animate-shimmer: shimmer 1.4s linear infinite;
+  --animate-rise: rise 0.2s ease-out both;
+
+  @keyframes shimmer {
+    from { background-position: 150% 0; }
+    to { background-position: -50% 0; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+  }
+}
+
+/*
+ * THEME SWITCHING without a flash. No attribute: follow the OS.
+ * data-theme="light"|"dark" is set before first paint by the inline script
+ * in app/layout.tsx (lib/theme.ts), so a saved choice never flashes the
+ * other theme.
+ */
+:root { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    background-color: var(--color-page);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    overflow-wrap: break-word;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  /* ONE focus style everywhere: a 2px ring in the primary blue (YInMn;
+     Jordy in dark mode) with an offset, so it never merges with a border. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  [tabindex="-1"]:focus { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+
+  ::selection { background-color: var(--color-selected); color: var(--color-ink); }
+
+  a { text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+
+  ::placeholder { color: var(--color-muted); opacity: 0.85; }
+
+  dialog::backdrop { background: rgb(25 35 56 / 0.6); }
+
+  /* Every number is a tabular, lining figure, so columns of Naira line up. */
+  table, .figures, input[inputmode="decimal"] { font-variant-numeric: tabular-nums lining-nums; }
+}
+
+/* Inputs: a "well" with a visible YInMn/Jordy edge (3:1 or more), and a
+   heavy DASHED edge when the field has an error (red is kept for money).
+   The message under the field, with its ✕, says what's wrong. */
+@utility field {
+  background-color: var(--color-well);
+  border: 1px solid var(--color-edge);
+  border-radius: var(--radius-control);
+  color: var(--color-ink);
+  &[aria-invalid="true"] { border-color: var(--color-ink); border-width: 2px; border-style: dashed; }
+  &:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+}
+
+@utility figures { font-variant-numeric: tabular-nums lining-nums; }
+
+/* A link in body text: primary blue, underlined (not colour alone). */
+@utility link {
+  color: var(--color-primary);
+  text-decoration-line: underline;
+  font-weight: 600;
+  &:hover { text-decoration-thickness: 2px; }
+}
+
+/* A LEDGER CARD: the card tint, a 1px Jordy edge, and a double rule across
+   the top, like the head of a ledger page. */
+@utility ledger {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  border-top: 3px double var(--color-edge);
+}
+
+/* RULED LINES: one Jordy rule under each row, like the lines of a ledger. */
+@utility ruled {
+  border-bottom: 1px solid var(--color-rule);
+}
+
+/* Ruled paper behind a block (the empty states, the hero): faint horizontal
+   lines every 1.75rem, and the red-margin line of an exercise book drawn in
+   Jordy instead. Pure decoration. */
+@utility ruled-paper {
+  background-image:
+    linear-gradient(90deg, transparent 2.25rem, var(--color-rule) 2.25rem, var(--color-rule) calc(2.25rem + 1px), transparent calc(2.25rem + 1px)),
+    repeating-linear-gradient(180deg, transparent 0 calc(1.75rem - 1px), var(--color-rule) calc(1.75rem - 1px) 1.75rem);
+}
+
+/* THE PERFORATED EDGE of an account card, like a cheque-book stub: a row
+   of punched holes down the left side (a CSS mask cuts them out of the
+   card) and a dotted tear line beside them. */
+@utility perforated {
+  position: relative;
+  -webkit-mask: radial-gradient(circle at 0 0.5rem, transparent 0.22rem, var(--color-ink) 0.26rem) 0 0 / 100% 1rem repeat-y;
+  mask: radial-gradient(circle at 0 0.5rem, transparent 0.22rem, var(--color-ink) 0.26rem) 0 0 / 100% 1rem repeat-y;
+  padding-left: 1.25rem;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0.5rem auto 0.5rem 0.65rem;
+    border-left: 2px dotted var(--color-rule);
+  }
+}
+
+/* ENGRAVED FIGURES for the big balances: the display face, filled with
+   fine horizontal hatching (two inks a hair apart), like the engraved
+   numerals on a banknote, and a hairline double rule beneath. The hatch is
+   both inks of the same text colour, so contrast stays that of ink. */
+@utility engraved {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-variant-numeric: lining-nums tabular-nums;
+  background-image: repeating-linear-gradient(180deg, var(--color-ink) 0 1.5px, color-mix(in srgb, var(--color-ink) 78%, var(--color-card)) 1.5px 2.5px);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-decoration: underline double var(--color-rule);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  @media (forced-colors: active) {
+    color: CanvasText;
+    background: none;
+  }
+}
+
+/* A small-caps label in the display face (column heads, card titles). */
+@utility rubric {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  color: var(--color-muted);
+}
+
+/* Skeleton shimmer for loading states. */
+@utility skeleton {
+  background-image: linear-gradient(90deg, var(--color-well) 0%, var(--color-rule) 50%, var(--color-well) 100%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+  border-radius: var(--radius-control);
+}
+
+/* REDUCED MOTION: people who ask their OS for less motion get none. */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

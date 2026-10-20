@@ -33,6 +33,8 @@ type TextFieldProps = {
   label: string
   hint?: ReactNode
   errors?: string[]
+  /** When the same form appears more than once on a page (an edit form per row), give each its own id. */
+  id?: string
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id'>
 
 /**
@@ -44,8 +46,8 @@ type TextFieldProps = {
  * - aria-invalid marks it invalid for assistive tech (and gives it the
  *   crimson border in globals.css).
  */
-export function TextField({ name, label, hint, errors, className, ...input }: TextFieldProps) {
-  const ids = fieldIds(name)
+export function TextField({ name, label, hint, errors, className, id, ...input }: TextFieldProps) {
+  const ids = fieldIds(id ?? name)
   const invalid = Boolean(errors?.length)
   return (
     <div className={className}>
@@ -61,11 +63,11 @@ export function TextField({ name, label, hint, errors, className, ...input }: Te
         id={ids.input}
         name={name}
         aria-invalid={invalid || undefined}
-        aria-describedby={describedBy(name, Boolean(hint), invalid)}
+        aria-describedby={describedBy(id ?? name, Boolean(hint), invalid)}
         className={cn('field block min-h-12 w-full px-3.5 text-base')}
         {...input}
       />
-      <FieldError name={name} errors={errors} />
+      <FieldError name={id ?? name} errors={errors} />
     </div>
   )
 }
@@ -76,6 +78,7 @@ type SelectFieldProps = {
   hint?: ReactNode
   errors?: string[]
   children: ReactNode
+  id?: string
 } & Omit<SelectHTMLAttributes<HTMLSelectElement>, 'name' | 'id' | 'children'>
 
 /**
@@ -83,8 +86,8 @@ type SelectFieldProps = {
  * purpose: on a phone it opens the system picker (big, thumb-friendly,
  * searchable on some phones), and screen readers know it well.
  */
-export function SelectField({ name, label, hint, errors, className, children, ...select }: SelectFieldProps) {
-  const ids = fieldIds(name)
+export function SelectField({ name, label, hint, errors, className, children, id, ...select }: SelectFieldProps) {
+  const ids = fieldIds(id ?? name)
   const invalid = Boolean(errors?.length)
   return (
     <div className={className}>
@@ -100,13 +103,13 @@ export function SelectField({ name, label, hint, errors, className, children, ..
         id={ids.input}
         name={name}
         aria-invalid={invalid || undefined}
-        aria-describedby={describedBy(name, Boolean(hint), invalid)}
+        aria-describedby={describedBy(id ?? name, Boolean(hint), invalid)}
         className="field block min-h-12 w-full px-3 text-base"
         {...select}
       >
         {children}
       </select>
-      <FieldError name={name} errors={errors} />
+      <FieldError name={id ?? name} errors={errors} />
     </div>
   )
 }
@@ -116,7 +119,6 @@ type TextAreaFieldProps = {
   label: string
   hint?: ReactNode
   errors?: string[]
-  /** Day 20: when two forms on one page have a field with the same name, give each its own id. */
   id?: string
 } & Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'name' | 'id'>
 
@@ -152,8 +154,8 @@ export function TextAreaField({ name, label, hint, errors, className, id, ...tex
  * phone is the decimal pad (inputMode="decimal"). The server turns the
  * text into integer kobo (lib/money.ts parseNaira), never via a float.
  */
-export function NairaField({ name, label, hint, errors, className, ...input }: TextFieldProps) {
-  const ids = fieldIds(name)
+export function NairaField({ name, label, hint, errors, className, id, ...input }: TextFieldProps) {
+  const ids = fieldIds(id ?? name)
   const invalid = Boolean(errors?.length)
   return (
     <div className={className}>
@@ -175,12 +177,12 @@ export function NairaField({ name, label, hint, errors, className, ...input }: T
           inputMode="decimal"
           autoComplete="off"
           aria-invalid={invalid || undefined}
-          aria-describedby={describedBy(name, Boolean(hint), invalid)}
+          aria-describedby={describedBy(id ?? name, Boolean(hint), invalid)}
           className="field block min-h-12 w-full pr-3.5 pl-8 text-base tabular-nums"
           {...input}
         />
       </div>
-      <FieldError name={name} errors={errors} />
+      <FieldError name={id ?? name} errors={errors} />
     </div>
   )
 }

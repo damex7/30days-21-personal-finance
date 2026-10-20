@@ -4,7 +4,7 @@
 // shown in the forms too.
 import { z } from 'zod'
 import { parseNaira } from './money'
-import { ACCOUNT_TYPES, CATEGORY_ICONS, COLOUR_TOKENS } from './repos/common'
+import { ACCOUNT_TYPES, CATEGORY_ICONS, COLOUR_TOKENS } from './constants'
 import { DATE_FORMATS } from './statement-formats'
 import { ISO_MONTH, isValidDate, todayInLagos } from './time'
 
